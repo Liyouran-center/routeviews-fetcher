@@ -132,7 +132,6 @@ jobs:
         xz -9 -T0 bgp_data.txt
         ls -lh bgp_data.txt.xz
         rm -rf bgp_data/
-        rm bgp_data.txt
   
         mv as_prefixes/README.md ./
 
