@@ -51,13 +51,25 @@ jobs:
         echo "---"
         echo "总共提取到 $(wc -l < bgp_data/bgp_data.txt) 条路由"
 
-    - name: 过滤 AS prefixes
+    # - name: 过滤 AS prefixes
+    #   run: |
+    #     # 找到最新的BGP数据文件
+    #     LATEST_FILE=$(ls -t bgp_data/*.txt | head -1)
+    #     if [ -n "$LATEST_FILE" ]; then
+    #       echo "Processing file: $LATEST_FILE"
+    #       python extract_as_prefixes.py "$LATEST_FILE" -A as_target.txt
+    #     else
+    #       echo "No BGP data file found"
+    #       exit 1
+    #     fi
+    #     ls -la as_prefixes/
+    - name: 提取全部 AS prefixes
       run: |
         # 找到最新的BGP数据文件
         LATEST_FILE=$(ls -t bgp_data/*.txt | head -1)
         if [ -n "$LATEST_FILE" ]; then
           echo "Processing file: $LATEST_FILE"
-          python extract_as_prefixes.py "$LATEST_FILE" -A as_target.txt
+          python extract_as_prefixes.py "$LATEST_FILE"
         else
           echo "No BGP data file found"
           exit 1
@@ -132,7 +144,7 @@ jobs:
         xz -9 -T0 bgp_data.txt
         ls -lh bgp_data.txt.xz
         rm -rf bgp_data/
-  
+
         mv as_prefixes/README.md ./
 
         echo "🔗 正在整合 as_prefixes 目录下的文本文件..."
