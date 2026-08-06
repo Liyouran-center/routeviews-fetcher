@@ -145,7 +145,8 @@ jobs:
           Release tag: bgp-data-${{ github.run_number }}
         draft: false
         prerelease: false
-        assets: release-package/as_prefixes
+        assets: |
+          release-package/as_prefixes/*.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
