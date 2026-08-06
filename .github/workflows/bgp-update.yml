@@ -104,18 +104,19 @@ jobs:
         cat $(ls -v as_prefixes/*.txt 2>/dev/null) > as_prefixes/all_as_prefixes.txt || true
         wc -l as_prefixes/all_as_prefixes.txt
 
-    - name: 打包发布资产
+    - name: 准备 Release 资产
       run: |
-        tar -cJf my-bgp-data.tar.xz as_prefixes bgp_data/bgp_data.txt
-        ls -lh my-bgp-data.tar.xz
+        mkdir -p release-package/as_prefixes
+        cp as_prefixes/*.txt release-package/as_prefixes/ || true
+        ls -lh release-package/as_prefixes
 
     - name: Upload Data Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: my-bgp-data       # 给这个压缩包起个名字
+        name: my-bgp-data
         path: |
-          my-bgp-data.tar.xz
-        retention-days: 1       # (可选) 保留天数，默认 90 天
+          release-package/as_prefixes
+        retention-days: 1
 
   publish-release:
     needs: generate-data
@@ -140,11 +141,11 @@ jobs:
         name: BGP Data Update ${{ github.run_number }}
         body: |
           自动生成的 BGP 数据和 AS 前缀文件。
-          生成时间: ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}
+          生成来源: ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}
           Release tag: bgp-data-${{ github.run_number }}
         draft: false
         prerelease: false
-        assets: release-package/my-bgp-data.tar.xz
+        assets: release-package/as_prefixes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
