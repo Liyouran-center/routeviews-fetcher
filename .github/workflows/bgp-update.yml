@@ -140,7 +140,7 @@ jobs:
         name: BGP Data Update ${{ github.run_number }}
         body: |
           自动生成的 BGP 数据和 AS 前缀文件。
-          生成时间: ${{ github.event.schedule ? 'schedule' : 'manual' }}
+          生成时间: ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}
           Release tag: bgp-data-${{ github.run_number }}
         draft: false
         prerelease: false
